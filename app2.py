@@ -17,9 +17,9 @@ df1['date'] = pd.to_datetime(df1['date'])
 model = joblib.load('model.pkl')  
 
 # Initialize Flask and Dash
-server = Flask(__name__)
-app = Dash(__name__, server=server, url_base_pathname='/dashboard/')
-serverr = app.server
+server1 = Flask(__name__)
+app = Dash(__name__, server=server1, url_base_pathname='/dashboard/')
+server = app.server
 app.title = "Modern Sales Dashboard"
 
 # Dashboard Layout
