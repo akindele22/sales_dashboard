@@ -17,15 +17,17 @@ df1['date'] = pd.to_datetime(df1['date'])
 model = joblib.load('model.pkl')  
 
 # Initialize Flask and Dash
+server = Flask(__name__)
+
 # Route for the root ("/") page
-@server1.route('/')
+@server.route('/')
 def index():
     return redirect('/dashboard/')
 
 # Dash app setup
-app = Dash(__name__, server=server1, url_base_pathname='/dashboard/')
+app = Dash(__name__, server=server, url_base_pathname='/dashboard/')
 app.title = "Modern Sales Dashboard"
-server = app.server
+Server = app.server
 
 # Dashboard Layout
 app.layout = html.Div(
@@ -256,4 +258,4 @@ def update_dashboard(store, store_type, locale, forecast_period):
            
 # Run server
 if __name__ == '__main__':
-    server1.run(debug=True)
+    server.run(debug=True)
