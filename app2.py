@@ -164,7 +164,7 @@ def update_dashboard(store, store_type, locale, forecast_period):
     sales_trend_fig.update_layout(
         title="Sales Trend", 
         xaxis_title="Date", 
-        yaxis_title="Sales",
+        yaxis_title="Sales($)",
         plot_bgcolor="#1e2132",  # Background color of the chart
         paper_bgcolor="#1e2132", # Background color of the chart's paper
         font=dict(color='white') # Font color for the axis titles and ticks
@@ -210,7 +210,7 @@ def update_dashboard(store, store_type, locale, forecast_period):
     promotion_sales_by_family_fig.update_layout(
         title="Promotion Sales by Family",
         xaxis_title="Product Family",
-        yaxis_title="Sales",
+        yaxis_title="Sales($)",
         barmode='stack',  # Stack bars for better comparison
         plot_bgcolor="#1e2132",  # Background color of the chart
         paper_bgcolor="#1e2132",  # Background color of the chart's paper
