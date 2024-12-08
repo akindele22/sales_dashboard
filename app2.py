@@ -239,8 +239,16 @@ def update_dashboard(store, store_type, locale, forecast_period):
     last_date = filtered_df['date'].max()
     forecast_dates = [last_date + timedelta(days=i) for i in range(1, forecast_period + 1)]
     forecast_features = np.random.rand(len(forecast_dates), 15)  # Simulate features
+
+    # Generate predictions
     predictions = model.predict(forecast_features)
-    predictions = np.abs(predictions)
+    predictions = np.abs(predictions)  # Ensure non-negative predictions
+
+    # Scale predictions to 10-20 million range
+    min_value = 10_000_000  # 10 million
+    max_value = 20_000_000  # 20 million
+    predictions = min_value + (predictions - predictions.min()) * (max_value - min_value) / (predictions.max() - predictions.min())
+
     
     forecast_fig = go.Figure(data=[go.Scatter(x=forecast_dates, y=predictions, mode='lines', name="Forecasted Sales")])
     forecast_fig.update_layout(title="Forecasted Sales", xaxis_title="Date", yaxis_title="Sales($)", plot_bgcolor="#1e2132", paper_bgcolor="#1e2132", font=dict(color='white'))
