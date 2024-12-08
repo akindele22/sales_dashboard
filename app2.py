@@ -31,42 +31,42 @@ Server = app.server
 
 # Dashboard Layout
 app.layout = html.Div(
-    style={'backgroundColor': '#1e2132', 'padding': '20px', 'fontFamily': 'Arial, sans-serif'},
+    style={'backgroundColor': '#1e2132', 'padding': '20px', 'fontFamily': 'Helvetica'},
     children=[
         html.H1("Sales Analytics Dashboard", style={
             'text-align': 'center', 
             'padding': '10px', 
             'color': 'white',
-            'font-family': 'Roboto, Arial, sans-serif'
+            'font-family': 'Roboto, Helvetica'
         }),
         
         # Filters Section
         html.Div([
             html.Div([
-                html.Label("Store Number", style={'color': 'white', 'font-family': 'Open Sans, Arial, sans-serif'}),
+                html.Label("Store Number", style={'color': 'white', 'font-family': 'Helvetica'}),
                 dcc.Dropdown(
                     id="store_filter",
                     options=[{"label": f"Store {s}", "value": s} for s in df1['store_nbr'].unique()],
                     placeholder="Select Store",
-                    style={'width': '100%', 'font-family': 'Open Sans'}
+                    style={'width': '100%', 'font-family': 'Helvetica'}
                 ),
             ], style={'width': '30%', 'padding': '10px'}),
             html.Div([
-                html.Label("Store Type", style={'color': 'white', 'font-family': 'Open Sans, Arial, sans-serif'}),
+                html.Label("Store Type", style={'color': 'white', 'font-family': 'Helvetica'}),
                 dcc.Dropdown(
                     id="type_filter",
                     options=[{"label": t, "value": t} for t in df1['type'].unique()],
                     placeholder="Select Store Type",
-                    style={'width': '100%', 'font-family': 'Open Sans'}
+                    style={'width': '100%', 'font-family': 'Helvetica'}
                 ),
             ], style={'width': '30%', 'padding': '10px'}),
             html.Div([
-                html.Label("Locale Name", style={'color': 'white', 'font-family': 'Open Sans, Arial, sans-serif'}),
+                html.Label("Locale Name", style={'color': 'white', 'font-family': 'Helvetica'}),
                 dcc.Dropdown(
                     id="locale_filter",
                     options=[{"label": l, "value": l} for l in df1['locale_name'].unique()],
                     placeholder="Select Locale",
-                    style={'width': '100%', 'font-family': 'Open Sans'}
+                    style={'width': '100%', 'font-family': 'Helvetica'}
                 ),
             ], style={'width': '30%', 'padding': '10px'}),
         ], style={'display': 'flex', 'justify-content': 'space-between', 'margin-bottom': '20px'}),
@@ -101,8 +101,6 @@ app.layout = html.Div(
             html.Div([dcc.Graph(id="sales_by_type")], style={'width': '48%'}),
             html.Div([dcc.Graph(id="promotion_analysis")], style={'width': '48%'}),
         ], style={'display': 'flex', 'justify-content': 'space-between', 'margin-bottom': '20px'}),
-        
-
         
         # Forecasting Section
         html.Div([
@@ -185,10 +183,6 @@ def update_dashboard(store, store_type, locale, forecast_period):
         values='sales'
     ).fillna(0)  # Fill NaN values with 0
 
-    # Debug: Check the pivoted data
-    #print("Pivot Table:")
-    #print(promotion_sales_by_family_pivot)
-
     # Plot the bar chart for Promotion Sales by Family
     promotion_sales_by_family_fig = go.Figure()
 
@@ -223,8 +217,6 @@ def update_dashboard(store, store_type, locale, forecast_period):
         font=dict(color='white')  # Font color for the axis titles and ticks
     )
 
-
-    
     # Product Analysis
     product_analysis_fig = go.Figure(data=[
         go.Bar(x=filtered_df['family'].unique(), y=filtered_df.groupby('family')['sales'].sum(), name="Product Sales")
@@ -248,13 +240,14 @@ def update_dashboard(store, store_type, locale, forecast_period):
     forecast_dates = [last_date + timedelta(days=i) for i in range(1, forecast_period + 1)]
     forecast_features = np.random.rand(len(forecast_dates), 15)  # Simulate features
     predictions = model.predict(forecast_features)
+    predictions = np.abs(predictions)
+    
     forecast_fig = go.Figure(data=[go.Scatter(x=forecast_dates, y=predictions, mode='lines', name="Forecasted Sales")])
-    forecast_fig.update_layout(title="Forecasted Sales", xaxis_title="Date", yaxis_title="Sales", plot_bgcolor="#1e2132", paper_bgcolor="#1e2132", font=dict(color='white'))
+    forecast_fig.update_layout(title="Forecasted Sales", xaxis_title="Date", yaxis_title="Sales($)", plot_bgcolor="#1e2132", paper_bgcolor="#1e2132", font=dict(color='white'))
 
     return total_revenue, total_transactions, avg_discounted_sales, avg_oil_price, \
        sales_trend_fig, product_analysis_fig, promotion_sales_by_family_fig, promotion_analysis_fig, \
        forecast_fig
-
            
 # Run server
 if __name__ == '__main__':
