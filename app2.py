@@ -39,11 +39,17 @@ app.layout = html.Div(
             'color': 'white',
             'font-family': 'Roboto, Helvetica'
         }),
+        html.H2("By Olushola Ogunlana", style={
+            'text-align': 'center', 
+            'padding': '10px', 
+            'color': 'white',
+            'font-family': 'Roboto, Helvetica'
+        }),
         
         # Filters Section
         html.Div([
             html.Div([
-                html.Label("Store Number", style={'color': 'white', 'font-family': 'Helvetica'}),
+                html.Label("Store Number", style={'color': 'white', 'font-family': 'Helvetica, Helvetica'}),
                 dcc.Dropdown(
                     id="store_filter",
                     options=[{"label": f"Store {s}", "value": s} for s in df1['store_nbr'].unique()],
@@ -52,7 +58,7 @@ app.layout = html.Div(
                 ),
             ], style={'width': '30%', 'padding': '10px'}),
             html.Div([
-                html.Label("Store Type", style={'color': 'white', 'font-family': 'Helvetica'}),
+                html.Label("Store Type", style={'color': 'white', 'font-family': 'Helvetica, Helvetica'}),
                 dcc.Dropdown(
                     id="type_filter",
                     options=[{"label": t, "value": t} for t in df1['type'].unique()],
@@ -61,7 +67,7 @@ app.layout = html.Div(
                 ),
             ], style={'width': '30%', 'padding': '10px'}),
             html.Div([
-                html.Label("Locale Name", style={'color': 'white', 'font-family': 'Helvetica'}),
+                html.Label("Locale Name", style={'color': 'white', 'font-family': 'Helvetica, Helvetica'}),
                 dcc.Dropdown(
                     id="locale_filter",
                     options=[{"label": l, "value": l} for l in df1['locale_name'].unique()],
@@ -102,9 +108,11 @@ app.layout = html.Div(
             html.Div([dcc.Graph(id="promotion_analysis")], style={'width': '48%'}),
         ], style={'display': 'flex', 'justify-content': 'space-between', 'margin-bottom': '20px'}),
         
+
+        
         # Forecasting Section
         html.Div([
-            html.H3("Forecasted Sales Analysis", style={
+            html.H3("Sales Prediction", style={
                 'text-align': 'center', 
                 'margin-top': '30px', 
                 'color': 'white', 
@@ -153,10 +161,10 @@ def update_dashboard(store, store_type, locale, forecast_period):
         filtered_df = filtered_df[filtered_df['locale_name'] == locale]
 
     # KPIs
-    total_revenue = f"Total Revenue: ${filtered_df['sales'].sum():,.2f}"
-    total_transactions = f"Total Transactions: {filtered_df['transactions'].sum():,.0f}"
-    avg_discounted_sales = f"Avg Discounted Sales: ${filtered_df[filtered_df['onpromotion'] > 0]['sales'].mean():,.2f}"
-    avg_oil_price = f"Avg Oil Price: ${filtered_df['dcoilwtico'].mean():,.2f}"
+    total_revenue = f"Total revenue: ${filtered_df['sales'].sum():,.2f}"
+    total_transactions = f"Total transactions: {filtered_df['transactions'].sum():,.0f}"
+    avg_discounted_sales = f"Avg discounted sales: ${filtered_df[filtered_df['onpromotion'] > 0]['sales'].mean():,.2f}"
+    avg_oil_price = f"Avg oil price: ${filtered_df['dcoilwtico'].mean():,.2f}"
 
     # Sales Trend (Bar Chart)
     sales_trend_fig = go.Figure()
@@ -182,6 +190,7 @@ def update_dashboard(store, store_type, locale, forecast_period):
         columns='onpromotion',
         values='sales'
     ).fillna(0)  # Fill NaN values with 0
+
 
     # Plot the bar chart for Promotion Sales by Family
     promotion_sales_by_family_fig = go.Figure()
@@ -217,11 +226,12 @@ def update_dashboard(store, store_type, locale, forecast_period):
         font=dict(color='white')  # Font color for the axis titles and ticks
     )
 
+    
     # Product Analysis
     product_analysis_fig = go.Figure(data=[
         go.Bar(x=filtered_df['family'].unique(), y=filtered_df.groupby('family')['sales'].sum(), name="Product Sales")
     ])
-    product_analysis_fig.update_layout(title="Product Sales by Family", xaxis_title="Product Family", yaxis_title="Sales",plot_bgcolor="#1e2132", paper_bgcolor="#1e2132", font=dict(color='white'))
+    product_analysis_fig.update_layout(title="Product Sales by Family", xaxis_title="Product Family", yaxis_title="Sales($)",plot_bgcolor="#1e2132", paper_bgcolor="#1e2132", font=dict(color='white'))
 
     # Sales by Type
     sales_by_type_fig = go.Figure(data=[
@@ -235,6 +245,7 @@ def update_dashboard(store, store_type, locale, forecast_period):
     ])
     promotion_analysis_fig.update_layout(title="Sales Distribution by Promotion", plot_bgcolor="#1e2132", paper_bgcolor="#1e2132", font=dict(color='white'))
 
+    # Forecast
     # Forecast
     last_date = filtered_df['date'].max()
     forecast_dates = [last_date + timedelta(days=i) for i in range(1, forecast_period + 1)]
@@ -251,7 +262,7 @@ def update_dashboard(store, store_type, locale, forecast_period):
 
     
     forecast_fig = go.Figure(data=[go.Scatter(x=forecast_dates, y=predictions, mode='lines', name="Forecasted Sales")])
-    forecast_fig.update_layout(title="Forecasted Sales", xaxis_title="Date", yaxis_title="Sales($)", plot_bgcolor="#1e2132", paper_bgcolor="#1e2132", font=dict(color='white'))
+    forecast_fig.update_layout(title="", xaxis_title="Date", yaxis_title="Sales($)", plot_bgcolor="#1e2132", paper_bgcolor="#1e2132", font=dict(color='white'))
 
     return total_revenue, total_transactions, avg_discounted_sales, avg_oil_price, \
        sales_trend_fig, product_analysis_fig, promotion_sales_by_family_fig, promotion_analysis_fig, \
