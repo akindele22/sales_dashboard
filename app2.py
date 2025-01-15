@@ -39,12 +39,6 @@ app.layout = html.Div(
             'color': 'white',
             'font-family': 'Roboto, Helvetica'
         }),
-        html.H2("By Olushola Ogunlana", style={
-            'text-align': 'center', 
-            'padding': '10px', 
-            'color': 'white',
-            'font-family': 'Roboto, Helvetica'
-        }),
         
         # Filters Section
         html.Div([
